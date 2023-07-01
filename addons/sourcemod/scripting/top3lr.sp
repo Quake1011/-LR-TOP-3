@@ -19,8 +19,6 @@ public Plugin myinfo =
 
 public void OnPluginStart()
 {
-	db = view_as<Database>(LR_GetDatabase());
-	
 	KeyValues kv = CreateKeyValues("top3lr");
 	char path[PLATFORM_MAX_PATH];
 	BuildPath(Path_SM, path, sizeof(path), "configs/top3lr.ini");
@@ -97,6 +95,7 @@ public Action Updater(Handle hTimer)
 		}
 	}
 
+	db = view_as<Database>(LR_GetDatabase());
 	Format(bf, sizeof(bf), "SELECT `name`, `%s` FROM `lvl_base` ORDER BY `%s` DESC LIMIT 3", vrnt[0], vrnt[0]);
 	DBResultSet result = SQL_Query(db, bf);
 	
