@@ -96,6 +96,14 @@ public Action Updater(Handle hTimer)
 	}
 
 	db = view_as<Database>(LR_GetDatabase());
+	if(db == null)
+	{
+		LogMessage("Error LR db connection");
+		LogMessage("Try to get connection after 5 seconds");
+		CreateTimer(5.0, Reconnecter, _, TIMER_REPEAT);
+		return Plugin_Stop;
+	}
+
 	Format(bf, sizeof(bf), "SELECT `name`, `%s` FROM `lvl_base` ORDER BY `%s` DESC LIMIT 3", vrnt[0], vrnt[0]);
 	DBResultSet result = SQL_Query(db, bf);
 	
@@ -122,5 +130,20 @@ public Action Updater(Handle hTimer)
 	
 	TrimString(bf);
 	CGOPrintToChatAll(bf);
+	return Plugin_Continue;
+}
+
+
+public Action Reconnecter(Handle hTimer)
+{
+	db = view_as<Database>(LR_GetDatabase());
+	if(db == null)
+		LogMessage("Try to get connection after 5 seconds");
+	else
+	{
+		LogMessage("Connection repaired!");
+		CreateTimer(fDelay, Updater, _, TIMER_REPEAT);
+		return Plugin_Stop;
+	}
 	return Plugin_Continue;
 }
